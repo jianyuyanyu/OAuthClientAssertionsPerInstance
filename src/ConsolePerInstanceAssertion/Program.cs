@@ -1,4 +1,5 @@
 using Duende.AccessTokenManagement;
+using Duende.AccessTokenManagement.DPoP;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
@@ -44,32 +45,32 @@ public class Program
                 services.AddClientCredentialsTokenManagement()
                     .AddClient("mobile-dpop-client", client =>
                     {
-                        client.TokenEndpoint = "https://localhost:5101/connect/token";
+                        client.TokenEndpoint = new Uri("https://localhost:5101/connect/token");
 
-                        client.ClientId = "mobile-dpop-client";
+                        client.ClientId = ClientId.Parse("mobile-dpop-client");
                         // Using client assertion
                         //client.ClientSecret = "905e4892-7610-44cb-a122-6209b38c882f";
 
-                        client.Scope = $"DPoPApiDefaultScope auth_session:{session.AuthSession}";
+                        client.Scope = Scope.Parse($"DPoPApiDefaultScope auth_session:{session.AuthSession}");
                         client.DPoPJsonWebKey = CreateDPoPKey();
                     })
                     .AddClient("onboarding-user-client", client =>
                     {
-                        client.TokenEndpoint = "https://localhost:5101/connect/token";
+                        client.TokenEndpoint =  new Uri("https://localhost:5101/connect/token");
 
-                        client.ClientId = "onboarding-user-client";
+                        client.ClientId = ClientId.Parse("onboarding-user-client");
                         // Using client assertion
                         //client.ClientSecret = "905e4892-7610-44cb-a122-6209b38c882f";
 
-                        client.Scope = $"OnboardingUserScope auth_session:{session.AuthSession}";
+                        client.Scope = Scope.Parse($"OnboardingUserScope auth_session:{session.AuthSession}");
                         client.DPoPJsonWebKey = CreateDPoPKey();
                     });
 
-                services.AddClientCredentialsHttpClient("mobile-dpop-client", "mobile-dpop-client", client =>
+                services.AddClientCredentialsHttpClient("mobile-dpop-client", ClientCredentialsClientName.Parse("mobile-dpop-client"), client =>
                 {
                     client.BaseAddress = new Uri("https://localhost:5105/");
                 });
-                services.AddClientCredentialsHttpClient("onboarding-user-client", "onboarding-user-client", client =>
+                services.AddClientCredentialsHttpClient("onboarding-user-client", ClientCredentialsClientName.Parse("onboarding-user-client"), client =>
                 {
                     client.BaseAddress = new Uri("https://localhost:5101/");
                 });
@@ -80,12 +81,12 @@ public class Program
         return host;
     }
 
-    private static string CreateDPoPKey()
+    private static DPoPProofKey CreateDPoPKey()
     {
         var key = new RsaSecurityKey(RSA.Create(2048));
         var jwk = JsonWebKeyConverter.ConvertFromRSASecurityKey(key);
         jwk.Alg = "PS256";
         var jwkJson = JsonSerializer.Serialize(jwk);
-        return jwkJson;
+        return DPoPProofKey.Parse(jwkJson);
     }
 }

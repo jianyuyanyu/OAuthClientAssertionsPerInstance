@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ConsolePerInstanceAssertion;
@@ -23,8 +24,7 @@ public class ClientAssertionService : IClientAssertionService
         _keySessionService = keySessionService;
     }
 
-    public async Task<ClientAssertion?> GetClientAssertionAsync(
-      string? clientName = null, TokenRequestParameters? parameters = null)
+    public async Task<ClientAssertion?> GetClientAssertionAsync(ClientCredentialsClientName? clientName = null, TokenRequestParameters? parameters = null, CancellationToken ct = default)
     {
         if ((clientName == "mobile-dpop-client") || (clientName == "onboarding-user-client"))
         {
@@ -34,15 +34,15 @@ public class ClientAssertionService : IClientAssertionService
             var descriptor = new SecurityTokenDescriptor
             {
                 Issuer = options.ClientId,
-                Audience = options.TokenEndpoint,
+                Audience = options.TokenEndpoint!.ToString(),
                 Expires = DateTime.UtcNow.AddMinutes(1),
                 SigningCredentials = key.SigningCredentials,
 
                 Claims = new Dictionary<string, object>
                 {
                     { JwtClaimTypes.JwtId, Guid.NewGuid().ToString() },
-                    { JwtClaimTypes.Subject, options.ClientId! },
-                    { JwtClaimTypes.IssuedAt, DateTime.UtcNow.ToEpochTime() },
+                    { JwtClaimTypes.Subject, options.ClientId.ToString()! },
+                    { JwtClaimTypes.IssuedAt, DateTimeOffset.UtcNow.ToUnixTimeSeconds() },
                     { "device_auth_session", key.AuthSession! }
                 }
             };
