@@ -1,8 +1,10 @@
 using Duende.AspNetCore.Authentication.JwtBearer.DPoP;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.OpenApi;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Logging;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using NetEscapades.AspNetCore.SecurityHeaders.Infrastructure;
 using Serilog;
 
@@ -74,43 +76,10 @@ internal static class HostingExtensions
                 policy.RequireClaim("scope", "DPoPApiDefaultScope");
             });
 
-        services.AddSwaggerGen(c =>
+        builder.Services.AddOpenApi(options =>
         {
-            // add JWT Authentication
-            var securityScheme = new OpenApiSecurityScheme
-            {
-                Name = "JWT Authentication",
-                Description = "Enter JWT Bearer token **_only_**",
-                In = ParameterLocation.Header,
-                Type = SecuritySchemeType.Http,
-                Scheme = "bearer", // must be lower case
-                BearerFormat = "JWT",
-                Reference = new OpenApiReference
-                {
-                    Id = JwtBearerDefaults.AuthenticationScheme,
-                    Type = ReferenceType.SecurityScheme
-                }
-            };
-            c.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
-            c.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
-                {securityScheme, Array.Empty<string>()}
-            });
-
-            c.SwaggerDoc("v1", new OpenApiInfo
-            {
-                Title = "DPOP API",
-                Version = "v1",
-                Description = "User API",
-                Contact = new OpenApiContact
-                {
-                    Name = "damienbod",
-                    Email = string.Empty,
-                    Url = new Uri("https://damienbod.com/"),
-                },
-            });
+            options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
         });
-
         services.AddControllers();
 
         return builder.Build();
@@ -130,15 +99,16 @@ internal static class HostingExtensions
 
         app.UseSecurityHeaders();
 
+        app.MapOpenApi("/openapi/v1/openapi.json");
+
         if (app.Environment.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
 
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
+            app.UseSwaggerUI(options =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
-            });
+                options.SwaggerEndpoint("/openapi/v1/openapi.json", "v1");
+            }); 
         }
 
         app.UseRouting();
@@ -150,5 +120,34 @@ internal static class HostingExtensions
             .RequireAuthorization();
 
         return app;
+    }
+
+    internal sealed class BearerSecuritySchemeTransformer(IAuthenticationSchemeProvider authenticationSchemeProvider) : IOpenApiDocumentTransformer
+    {
+        public async Task TransformAsync(OpenApiDocument document, OpenApiDocumentTransformerContext context, CancellationToken cancellationToken)
+        {
+            var authenticationSchemes = await authenticationSchemeProvider.GetAllSchemesAsync();
+            if (authenticationSchemes.Any(authScheme => authScheme.Name == "Bearer"))
+            {
+                var requirements = new Dictionary<string, IOpenApiSecurityScheme>
+                {
+                    ["Bearer"] = new OpenApiSecurityScheme
+                    {
+                        Type = SecuritySchemeType.Http,
+                        Scheme = "bearer", // "bearer" refers to the header name here
+                        In = ParameterLocation.Header,
+                        BearerFormat = "Json Web Token"
+                    }
+                };
+                document.Components ??= new OpenApiComponents();
+                document.Components.SecuritySchemes = requirements;
+            }
+            document.Info = new()
+            {
+                Title = "My API Bearer scheme",
+                Version = "v1",
+                Description = "API for Damien"
+            };
+        }
     }
 }
