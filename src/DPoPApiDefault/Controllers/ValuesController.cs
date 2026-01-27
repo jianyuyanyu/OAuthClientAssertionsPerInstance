@@ -4,10 +4,14 @@ using Microsoft.AspNetCore.Mvc;
 namespace DPoPApiDefault.Controllers;
 
 [Authorize(Policy = "protectedScope")]
+[ApiController]
 [Route("api/[controller]")]
 public class ValuesController : Controller
 {
     [HttpGet]
+    [EndpointSummary("This is a summary from OpenApi attributes.")]
+    [EndpointDescription("This is a description from OpenApi attributes.")]
+    [Produces(typeof(IEnumerable<string>))]
     public IEnumerable<string> Get()
     {
         var authSession = GetAuthSession();
