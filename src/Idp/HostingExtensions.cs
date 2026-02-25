@@ -76,7 +76,7 @@ internal static class HostingExtensions
             // required each time the API is invoked.
             //
             // See RFC 9449 for more details.
-            opt.ValidationMode = ExpirationValidationMode.IssuedAt; // IssuedAt is the default.
+            opt.ProofTokenNonceClockSkew = TimeSpan.FromSeconds(30); // IssuedAt is the default.
         });
 
         builder.Services.AddAuthorizationBuilder()
