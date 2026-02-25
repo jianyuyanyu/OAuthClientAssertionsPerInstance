@@ -55,6 +55,9 @@ internal static class HostingExtensions
                 options.TokenValidationParameters.ValidTypes = ["at+jwt"];
             });
 
+        builder.Services.AddHybridCache();
+        builder.Services.AddKeyedHybridCache(ServiceProviderKeys.ProofTokenReplayHybridCache);
+
         // layers DPoP onto the "token" scheme above
         builder.Services.ConfigureDPoPTokensForScheme("dpoptokenscheme", opt =>
         {
