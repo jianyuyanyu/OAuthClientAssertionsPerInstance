@@ -8,11 +8,11 @@ namespace Idp;
 
 public class CustomTokenCreationService : DefaultTokenCreationService
 {
-    public CustomTokenCreationService(IClock clock,
+    public CustomTokenCreationService(TimeProvider timeProvider,
         IKeyMaterialService keys,
         IdentityServerOptions options,
         ILogger<DefaultTokenCreationService> logger)
-        : base(clock, keys, options, logger)
+        : base(timeProvider, keys, options, logger)
     {
     }
 
