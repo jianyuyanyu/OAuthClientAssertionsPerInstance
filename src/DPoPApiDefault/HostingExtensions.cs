@@ -55,7 +55,11 @@ internal static class HostingExtensions
                 options.TokenValidationParameters.ValidTypes = ["at+jwt"];
             });
 
-        builder.Services.AddHybridCache();
+        // Register in-memory distributed cache
+        // This is fine for demos, but in production, consider using Redis or another distributed cache
+        builder.Services.AddDistributedMemoryCache();
+
+        // Register keyed HybridCache
         builder.Services.AddKeyedHybridCache(ServiceProviderKeys.ProofTokenReplayHybridCache);
 
         // layers DPoP onto the "token" scheme above
