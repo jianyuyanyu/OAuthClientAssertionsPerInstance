@@ -72,6 +72,7 @@ public class CustomTokenCreationService : DefaultTokenCreationService
 
 ## History
 
+- 2026-06-05 Updated packages
 - 2026-02-25 Updated packages
 - 2026-01-27 Updated .NET 10
 - 2025-08-01 Updated packages
