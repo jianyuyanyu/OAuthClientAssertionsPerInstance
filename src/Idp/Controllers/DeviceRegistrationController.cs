@@ -49,7 +49,7 @@ public class DeviceRegistrationController : Controller
 
         var authSession = _publicKeyService.CreateSession(deviceRegistrationRequest.public_key, deviceRegistrationRequest.alg);
 
-        var signingCredential = await _keys.GetSigningCredentialsAsync();
+        var signingCredential = await _keys.GetSigningCredentialsAsync(["ES256", "RS256"], HttpContext.RequestAborted);
 
         var scheme = HttpContext.Request.Scheme;
         var host = HttpContext.Request.Host.Value;

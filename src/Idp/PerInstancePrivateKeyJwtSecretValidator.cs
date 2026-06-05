@@ -51,7 +51,7 @@ public class PerInstancePrivateKeyJwtSecretValidator : ISecretValidator
     /// A validation result
     /// </returns>
     /// <exception cref="System.ArgumentException">ParsedSecret.Credential is not a JWT token</exception>
-    public async Task<SecretValidationResult> ValidateAsync(IEnumerable<Secret> secrets, ParsedSecret parsedSecret)
+    public async Task<SecretValidationResult> ValidateAsync(IEnumerable<Secret> secrets, ParsedSecret parsedSecret, CancellationToken ct)
     {
         var fail = new SecretValidationResult { Success = false };
         var success = new SecretValidationResult { Success = true };
@@ -105,7 +105,7 @@ public class PerInstancePrivateKeyJwtSecretValidator : ISecretValidator
             return fail;
         }
 
-        var issuer = await _issuerNameService.GetCurrentAsync();
+        var issuer = await _issuerNameService.GetCurrentAsync(ct);
 
         var tokenValidationParameters = new TokenValidationParameters
         {
@@ -144,7 +144,7 @@ public class PerInstancePrivateKeyJwtSecretValidator : ISecretValidator
                 // token endpoint URL
                 string.Concat(_urls.BaseUrl.EnsureTrailingSlash(), ProtocolRoutePaths.Token),
                 // issuer URL + token (legacy support)
-                string.Concat((await _issuerNameService.GetCurrentAsync()).EnsureTrailingSlash(), ProtocolRoutePaths.Token),
+                string.Concat((await _issuerNameService.GetCurrentAsync(ct)).EnsureTrailingSlash(), ProtocolRoutePaths.Token),
                 // issuer URL
                 issuer,
                 // CIBA endpoint: https://openid.net/specs/openid-client-initiated-backchannel-authentication-core-1_0.html#auth_request
@@ -184,14 +184,14 @@ public class PerInstancePrivateKeyJwtSecretValidator : ISecretValidator
             return fail;
         }
 
-        if (await _replayCache.ExistsAsync(Purpose, jti))
+        if (await _replayCache.ExistsAsync(Purpose, jti, ct))
         {
             _logger.LogError("jti is found in replay cache. Possible replay attack.");
             return fail;
         }
         else
         {
-            await _replayCache.AddAsync(Purpose, jti, exp.AddMinutes(5));
+            await _replayCache.AddAsync(Purpose, jti, exp.AddMinutes(5), ct);
         }
 
         return success;
