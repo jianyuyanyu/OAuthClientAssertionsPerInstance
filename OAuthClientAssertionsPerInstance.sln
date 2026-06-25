@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenerateCertificate", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DPoPApiDefault", "src\DPoPApiDefault\DPoPApiDefault.csproj", "{EA050747-1F4A-54F3-8B8C-891C2D156023}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsolePerInstanceAssertionRS256", "src\ConsolePerInstanceAssertion\ConsolePerInstanceAssertionRS256.csproj", "{D97819C8-1FFD-210D-BBC9-DCA3952E0CA0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsolePerInstanceAssertionRS256", "src\ConsolePerInstanceAssertionRS256\ConsolePerInstanceAssertionRS256.csproj", "{D97819C8-1FFD-210D-BBC9-DCA3952E0CA0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Idp", "src\Idp\Idp.csproj", "{70288A7A-3DC2-7D4C-163B-7A3016EC29A4}"
 EndProject
