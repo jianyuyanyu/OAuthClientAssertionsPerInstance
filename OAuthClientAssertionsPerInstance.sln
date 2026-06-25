@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.6.33829.357
+# Visual Studio Version 18
+VisualStudioVersion = 18.7.11903.348 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_solutionsFiles", "_solutionsFiles", "{987D7C1A-2964-4FB5-8863-50B02F5ABA72}"
 	ProjectSection(SolutionItems) = preProject
@@ -18,6 +18,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Idp", "src\Idp\Idp.csproj", "{70288A7A-3DC2-7D4C-163B-7A3016EC29A4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthFlow", "src\AuthFlow\AuthFlow.csproj", "{A8F2D081-7C4F-A151-C6B5-D86834A285DE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsolePerInstanceAssertionES256", "src\ConsolePerInstanceAssertionES256\ConsolePerInstanceAssertionES256.csproj", "{4CA3B2C4-4E9F-D92B-43F2-954D941F5264}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{A8F2D081-7C4F-A151-C6B5-D86834A285DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A8F2D081-7C4F-A151-C6B5-D86834A285DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A8F2D081-7C4F-A151-C6B5-D86834A285DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4CA3B2C4-4E9F-D92B-43F2-954D941F5264}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CA3B2C4-4E9F-D92B-43F2-954D941F5264}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4CA3B2C4-4E9F-D92B-43F2-954D941F5264}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4CA3B2C4-4E9F-D92B-43F2-954D941F5264}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
