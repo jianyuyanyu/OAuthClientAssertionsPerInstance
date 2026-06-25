@@ -9,13 +9,13 @@ using System;
 using System.Security.Cryptography;
 using System.Text.Json;
 
-namespace ConsolePerInstanceAssertionRS256;
+namespace ConsolePerInstanceAssertionES256;
 
 public class Program
 {
     public static void Main(string[] args)
     {
-        Console.Title = "RS256 DPoP client with client assertions";
+        Console.Title = "ES256 DPoP client with client assertions";
 
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Debug()

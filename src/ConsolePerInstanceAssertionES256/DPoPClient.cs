@@ -9,7 +9,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ConsolePerInstanceAssertionRS256;
+namespace ConsolePerInstanceAssertionES256;
 
 public class DPoPClient : BackgroundService
 {

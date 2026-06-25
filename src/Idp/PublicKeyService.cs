@@ -35,7 +35,21 @@ public class PublicKeyService
     /// <summary>
     /// Get public key from cache
     /// </summary>
-    public SecurityKey GetPublicSecurityKey(string authSession)
+    public SecurityKey GetPublicSecurityKey(string authSession, string alg)
+    {
+        if (alg == "RS256")
+        {
+            return GetPublicSecurityKeyRS256(authSession);
+        }
+        else if (alg == "ES256")
+        {
+            return GetPublicSecurityKeyES256(authSession);
+        }
+
+        throw new ArgumentException("Unsupported algorithm", nameof(alg));
+    }
+
+    private SecurityKey GetPublicSecurityKeyRS256(string authSession)
     {
         var publicKeyPem = _inMemoryCache.GetValueOrDefault(authSession);
 
@@ -52,4 +66,23 @@ public class PublicKeyService
 
         throw new ArgumentNullException(nameof(authSession), "something went wrong");
     }
+
+    private SecurityKey GetPublicSecurityKeyES256(string authSession)
+    {
+        var publicKeyPem = _inMemoryCache.GetValueOrDefault(authSession);
+
+        // TODO we should support different alg types
+        if (publicKeyPem.PublicKey != null)
+        {
+            ECDsaSecurityKey securityKey;
+            var key = ECDsa.Create();
+            key.ImportFromPem(publicKeyPem.PublicKey);
+            securityKey = new ECDsaSecurityKey(key);
+
+            return securityKey;
+        }
+
+        throw new ArgumentNullException(nameof(authSession), "something went wrong");
+    }
+
 }

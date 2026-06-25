@@ -42,7 +42,7 @@ public class DeviceRegistrationController : Controller
             return UnauthorizedValidationParametersFailed("invalid_client", "Request client_id is incorrect");
         }
 
-        if (deviceRegistrationRequest.alg != "RS256")
+        if (deviceRegistrationRequest.alg != "RS256" && deviceRegistrationRequest.alg != "ES256")
         {
             return UnauthorizedValidationParametersFailed("invalid_client", "Request alg for the public_key is not supported");
         }

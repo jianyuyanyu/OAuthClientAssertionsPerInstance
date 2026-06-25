@@ -71,8 +71,8 @@ public class PerInstancePrivateKeyJwtSecretValidator : ISecretValidator
         if ("mobile-dpop-client" == parsedSecret.Id || "onboarding-user-client" == parsedSecret.Id)
         {
             // client assertion using instance public key
-            var authSessionFromAssertion = GetAuthSessionFromClientAssertion(jwtTokenString);
-            var securityKey = _publicKeyService.GetPublicSecurityKey(authSessionFromAssertion);
+            var (authSessionFromAssertion, alg) = GetAuthSessionFromClientAssertion(jwtTokenString);
+            var securityKey = _publicKeyService.GetPublicSecurityKey(authSessionFromAssertion, alg);
             trustedKeys = [securityKey];
 
             // TODO validate that only one auth_session scope is requested.
@@ -211,19 +211,19 @@ public class PerInstancePrivateKeyJwtSecretValidator : ISecretValidator
         return string.Empty;
     }
 
-    private string GetAuthSessionFromClientAssertion(string token)
+    private (string authSession, string Alg) GetAuthSessionFromClientAssertion(string token)
     {
         try
         {
             var jwt = new JwtSecurityToken(token);
             var deviceAuthSessionClaim = jwt.Claims.FirstOrDefault(c => c.Type == "device_auth_session");
 
-            return deviceAuthSessionClaim.Value.ToString();
+            return (deviceAuthSessionClaim.Value.ToString(), jwt.SignatureAlgorithm );
         }
         catch (Exception e)
         {
             _logger.LogWarning(e, "device_auth_session");
-            return null;
+            return (null, null);
         }
     }
 
