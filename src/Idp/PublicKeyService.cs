@@ -53,7 +53,6 @@ public class PublicKeyService
     {
         var publicKeyPem = _inMemoryCache.GetValueOrDefault(authSession);
 
-        // TODO we should support different alg types
         if (publicKeyPem.PublicKey != null)
         {
             RsaSecurityKey securityKey;
@@ -71,7 +70,6 @@ public class PublicKeyService
     {
         var publicKeyPem = _inMemoryCache.GetValueOrDefault(authSession);
 
-        // TODO we should support different alg types
         if (publicKeyPem.PublicKey != null)
         {
             ECDsaSecurityKey securityKey;
@@ -84,5 +82,4 @@ public class PublicKeyService
 
         throw new ArgumentNullException(nameof(authSession), "something went wrong");
     }
-
 }
