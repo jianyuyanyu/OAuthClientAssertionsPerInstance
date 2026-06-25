@@ -83,10 +83,19 @@ public class Program
 
     private static DPoPProofKey CreateDPoPKey()
     {
-        var key = new RsaSecurityKey(RSA.Create(2048));
-        var jwk = JsonWebKeyConverter.ConvertFromRSASecurityKey(key);
-        jwk.Alg = "PS256";
+        var ecdsa = ECDsa.Create();
+        ecdsa.KeySize = 256;
+        var ecdsaCertificateKey = new ECDsaSecurityKey(ecdsa);
+
+        var jwk = JsonWebKeyConverter.ConvertFromECDsaSecurityKey(ecdsaCertificateKey);
+        jwk.Alg = "ES256";
         var jwkJson = JsonSerializer.Serialize(jwk);
         return DPoPProofKey.Parse(jwkJson);
+
+        //var key = new RsaSecurityKey(RSA.Create(2048));
+        //var jwk = JsonWebKeyConverter.ConvertFromRSASecurityKey(key);
+        //jwk.Alg = "PS256";
+        //var jwkJson = JsonSerializer.Serialize(jwk);
+        //return DPoPProofKey.Parse(jwkJson);
     }
 }
