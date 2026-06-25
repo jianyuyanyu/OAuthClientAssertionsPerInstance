@@ -36,9 +36,12 @@ public class KeySessionService
         {
             return _inMemoryCache;
         }
-        var rsa2048 = RSA.Create(2048);
-        var rsaCertificateKey = new RsaSecurityKey(rsa2048);
-        var publicKeyPem = rsa2048.ExportRSAPublicKeyPem();
+
+        var ecdsa = ECDsa.Create();
+        ecdsa.KeySize = 256;
+        var ecdsaCertificateKey = new ECDsaSecurityKey(ecdsa);
+        var publicKeyPem = ecdsa.ExportSubjectPublicKeyInfoPem();
+
         var httpClient = new HttpClient();
 
         var nonce = RandomNumberGenerator.GetHexString(73);
@@ -53,7 +56,7 @@ public class KeySessionService
             new KeyValuePair<string, string>("client_id", _authFlowConfiguration.ClientId),
             new KeyValuePair<string, string>("grant_type", OAuthConsts.GRANT_TYPE),
             new KeyValuePair<string, string>("public_key", publicKeyPem),
-            new KeyValuePair<string, string>("alg", "RS256"),
+            new KeyValuePair<string, string>("alg", "ES256"),
             new KeyValuePair<string, string>("state", state),
             new KeyValuePair<string, string>("nonce", nonce)
         };
@@ -64,7 +67,7 @@ public class KeySessionService
 
         if (response.IsSuccessStatusCode)
         {
-            var signingCredentials = new SigningCredentials(rsaCertificateKey, "RS256");
+            var signingCredentials = new SigningCredentials(ecdsaCertificateKey, "ES256");
             var responseResult = await response.Content.ReadAsStringAsync();
             var deviceRegistrationResponse = JsonSerializer.Deserialize<DeviceRegistrationResponse>(responseResult);
 

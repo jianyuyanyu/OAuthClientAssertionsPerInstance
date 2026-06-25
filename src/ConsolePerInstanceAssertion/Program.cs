@@ -9,7 +9,7 @@ using System;
 using System.Security.Cryptography;
 using System.Text.Json;
 
-namespace ConsolePerInstanceAssertionES256;
+namespace ConsolePerInstanceAssertionRS256;
 
 public class Program
 {
