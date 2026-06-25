@@ -15,7 +15,7 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        Console.Title = "DPoP client with client assertions ES256";
+        Console.Title = "ES256 DPoP client with client assertions";
 
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Debug()
@@ -51,7 +51,7 @@ public class Program
                         // Using client assertion
                         //client.ClientSecret = "905e4892-7610-44cb-a122-6209b38c882f";
 
-                        client.Scope = Scope.Parse($"DPoPApiDefaultScope auth_session:{session.AuthSession}");
+                        client.Scope = Scope.Parse($"DPoPApiDefaultScope auth_session:{session.AuthSession}, ALG ES256");
                         client.DPoPJsonWebKey = CreateDPoPKey();
                     })
                     .AddClient("onboarding-user-client", client =>
