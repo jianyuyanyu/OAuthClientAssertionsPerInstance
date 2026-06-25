@@ -51,7 +51,7 @@ public class Program
                         // Using client assertion
                         //client.ClientSecret = "905e4892-7610-44cb-a122-6209b38c882f";
 
-                        client.Scope = Scope.Parse($"DPoPApiDefaultScope auth_session:{session.AuthSession}, ALG ES256");
+                        client.Scope = Scope.Parse($"DPoPApiDefaultScope auth_session:{session.AuthSession}");
                         client.DPoPJsonWebKey = CreateDPoPKey();
                     })
                     .AddClient("onboarding-user-client", client =>
@@ -62,7 +62,7 @@ public class Program
                         // Using client assertion
                         //client.ClientSecret = "905e4892-7610-44cb-a122-6209b38c882f";
 
-                        client.Scope = Scope.Parse($"OnboardingUserScope auth_session:{session.AuthSession}, ALG ES256");
+                        client.Scope = Scope.Parse($"OnboardingUserScope auth_session:{session.AuthSession}");
                         client.DPoPJsonWebKey = CreateDPoPKey();
                     });
 

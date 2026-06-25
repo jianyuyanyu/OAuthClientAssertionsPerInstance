@@ -15,7 +15,7 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        Console.Title = "RS256DPoP client with client assertions";
+        Console.Title = "RS256 DPoP client with client assertions";
 
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Debug()
